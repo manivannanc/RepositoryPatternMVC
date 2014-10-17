@@ -11,24 +11,29 @@ using TestDotNetWebApp.Models;
 
 namespace TestDotNetWebApp.Controllers
 {
-    public class CategoriesController : Controller
+    public class CatalogController : Controller
     {
-        private ProductContext db = new ProductContext();
+        private ICatalogRepository categoryRepository;
 
-        // GET: Categories
+        public CatalogController(ICatalogRepository categoryRepository)
+      {
+         this.categoryRepository = categoryRepository;
+      }
+
+        // GET: Category
         public ActionResult Index()
         {
-            return View(db.Categories.ToList());
+            return View(categoryRepository.GetCategories().ToList());
         }
 
-        // GET: Categories/Details/5
-        public ActionResult Details(int? id)
+        // GET: Category/Details/5
+        public ActionResult Details(int id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            Category category = categoryRepository.GetCategoryByID(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -36,13 +41,13 @@ namespace TestDotNetWebApp.Controllers
             return View(category);
         }
 
-        // GET: Categories/Create
+        // GET: Category/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Categories/Create
+        // POST: Category/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -51,22 +56,22 @@ namespace TestDotNetWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Categories.Add(category);
-                db.SaveChanges();
+                categoryRepository.InsertCategory(category);
+                categoryRepository.Save();
                 return RedirectToAction("Index");
             }
 
             return View(category);
         }
 
-        // GET: Categories/Edit/5
-        public ActionResult Edit(int? id)
+        // GET: Category/Edit/5
+        public ActionResult Edit(int id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            Category category = categoryRepository.GetCategoryByID(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -74,30 +79,36 @@ namespace TestDotNetWebApp.Controllers
             return View(category);
         }
 
-        // POST: Categories/Edit/5
+        // POST: Category/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name,OrderIndex")] Category category)
         {
+            try{
             if (ModelState.IsValid)
             {
-                db.Entry(category).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                categoryRepository.UpdateCategory(category);
+                categoryRepository.Save();
+            }
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name after DataException and add a line here to write a log.
+                ModelState.AddModelError(string.Empty, "Unable to save changes. Try again, and if the problem persists contact your system administrator.");
             }
             return View(category);
         }
 
-        // GET: Categories/Delete/5
-        public ActionResult Delete(int? id)
+        // GET: Category/Delete/5
+        public ActionResult Delete(int id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            Category category = categoryRepository.GetCategoryByID(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -105,23 +116,27 @@ namespace TestDotNetWebApp.Controllers
             return View(category);
         }
 
-        // POST: Categories/Delete/5
+        // POST: Category/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Category category = db.Categories.Find(id);
-            db.Categories.Remove(category);
-            db.SaveChanges();
+            try
+            {
+                categoryRepository.DeleteCategory(id);
+                categoryRepository.Save();
+            }
+            catch (DataException /* dex */)
+            {
+                //Log the error (uncomment dex variable name after DataException and add a line here to write a log.
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
+            categoryRepository.Dispose();
             base.Dispose(disposing);
         }
     }

@@ -14,8 +14,11 @@ namespace TestDotNetWebApp.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(),
                         OrderIndex = c.Int(nullable: false),
+                        ParentID = c.Int(),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Category", t => t.ParentID)
+                .Index(t => t.ParentID);
             
             CreateTable(
                 "dbo.Product",
@@ -31,30 +34,29 @@ namespace TestDotNetWebApp.Migrations
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
-                "dbo.ProductCategory",
+                "dbo.CategoryProduct",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
-                        ProductID = c.Int(nullable: false),
                         CategoryID = c.Int(nullable: false),
+                        ProductID = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => t.Id)
+                .PrimaryKey(t => new { t.CategoryID, t.ProductID })
                 .ForeignKey("dbo.Category", t => t.CategoryID, cascadeDelete: true)
                 .ForeignKey("dbo.Product", t => t.ProductID, cascadeDelete: true)
-                .Index(t => t.ProductID)
-                .Index(t => t.CategoryID);
-            
-            
+                .Index(t => t.CategoryID)
+                .Index(t => t.ProductID);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.ProductCategory", "ProductID", "dbo.Product");
-            DropForeignKey("dbo.ProductCategory", "CategoryID", "dbo.Category");
-            DropIndex("dbo.ProductCategory", new[] { "CategoryID" });
-            DropIndex("dbo.ProductCategory", new[] { "ProductID" });
-            DropTable("dbo.ProductCategory");
+            DropForeignKey("dbo.Category", "ParentID", "dbo.Category");
+            DropForeignKey("dbo.CategoryProduct", "ProductID", "dbo.Product");
+            DropForeignKey("dbo.CategoryProduct", "CategoryID", "dbo.Category");
+            DropIndex("dbo.CategoryProduct", new[] { "ProductID" });
+            DropIndex("dbo.CategoryProduct", new[] { "CategoryID" });
+            DropIndex("dbo.Category", new[] { "ParentID" });
+            DropTable("dbo.CategoryProduct");
             DropTable("dbo.Product");
             DropTable("dbo.Category");
         }

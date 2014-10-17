@@ -13,7 +13,7 @@ namespace TestDotNetWebApp.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201410161217555_InitialCreate"; }
+            get { return "201410171444504_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

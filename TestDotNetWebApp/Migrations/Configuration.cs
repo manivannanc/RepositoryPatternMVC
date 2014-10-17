@@ -5,14 +5,14 @@ namespace TestDotNetWebApp.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<TestDotNetWebApp.DAL.ProductContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<TestDotNetWebApp.DAL.ProductCatalogContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(TestDotNetWebApp.DAL.ProductContext context)
+        protected override void Seed(TestDotNetWebApp.DAL.ProductCatalogContext context)
         {
             //  This method will be called after migrating to the latest version.
 
