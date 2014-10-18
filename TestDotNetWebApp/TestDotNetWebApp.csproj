@@ -185,9 +185,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201410171444504_InitialCreate.cs" />
-    <Compile Include="Migrations\201410171444504_InitialCreate.Designer.cs">
-      <DependentUpon>201410171444504_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201410180303312_InitialCreate.cs" />
+    <Compile Include="Migrations\201410180303312_InitialCreate.Designer.cs">
+      <DependentUpon>201410180303312_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BaseEntity.cs" />
@@ -223,8 +223,8 @@
     <Folder Include="Data\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201410171444504_InitialCreate.resx">
-      <DependentUpon>201410171444504_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201410180303312_InitialCreate.resx">
+      <DependentUpon>201410180303312_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
